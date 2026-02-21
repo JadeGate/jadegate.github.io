@@ -3,225 +3,574 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💠 JadeGate — AI 智能体技能的确定性安全验证</title>
+    <title>JadeGate — Deterministic Security for AI Agents</title>
+    <meta name="description" content="The zero-trust security protocol for AI agent skills. 5-layer mathematical verification. Framework-agnostic.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            background: #0a0a0f;
-            color: #e0e0e0;
-            min-height: 100vh;
+        :root {
+            --jade: #10b981;
+            --jade-dim: rgba(16, 185, 129, 0.08);
+            --jade-glow: rgba(16, 185, 129, 0.15);
+            --bg: #000000;
+            --bg-elevated: #0a0a0a;
+            --surface: #111111;
+            --border: rgba(255,255,255,0.06);
+            --text-primary: #fafafa;
+            --text-secondary: rgba(255,255,255,0.5);
+            --text-tertiary: rgba(255,255,255,0.3);
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            font-size: 1.05rem;
+            letter-spacing: -0.02em;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+        .nav-logo span { font-size: 1.2rem; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-cta {
+            background: var(--text-primary) !important;
+            color: var(--bg) !important;
+            padding: 0.45rem 1rem;
+            border-radius: 980px;
+            font-weight: 500 !important;
+            font-size: 0.8rem !important;
+            transition: opacity 0.2s;
+        }
+        .nav-cta:hover { opacity: 0.85; }
+
+        /* Hero */
         .hero {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
             text-align: center;
-            padding: 2rem;
-            background: radial-gradient(ellipse at center, #0d1f2d 0%, #0a0a0f 70%);
+            padding: 8rem 2rem 6rem;
+            position: relative;
         }
-        .jade-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            filter: drop-shadow(0 0 20px rgba(0, 200, 150, 0.5));
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--jade-glow) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            border-radius: 980px;
+            border: 1px solid var(--border);
+            background: var(--bg-elevated);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        .hero-badge .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--jade);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
         h1 {
-            font-size: 3.5rem;
+            font-size: clamp(3rem, 8vw, 5.5rem);
             font-weight: 700;
-            background: linear-gradient(135deg, #00c896, #00a0e9);
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+        }
+        h1 .jade-text {
+            background: linear-gradient(135deg, var(--jade), #34d399, #6ee7b7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
         }
-        .subtitle {
-            font-size: 1.3rem;
-            color: #8899aa;
-            margin-bottom: 0.5rem;
-        }
-        .poem {
-            font-size: 1rem;
-            color: #556677;
-            font-style: italic;
-            margin-bottom: 2.5rem;
-        }
-        .tagline {
-            font-size: 1.1rem;
-            color: #aabbcc;
-            max-width: 700px;
-            line-height: 1.8;
+        .hero-sub {
+            font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 580px;
+            line-height: 1.7;
+            font-weight: 300;
             margin-bottom: 3rem;
         }
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            max-width: 900px;
-            margin-bottom: 3rem;
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 4rem;
         }
-        .feature {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: left;
-        }
-        .feature-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
-        .feature h3 { font-size: 1rem; color: #00c896; margin-bottom: 0.5rem; }
-        .feature p { font-size: 0.85rem; color: #8899aa; line-height: 1.6; }
-        .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
-        .cta {
-            display: inline-block;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 980px;
+            font-size: 0.95rem;
+            font-weight: 500;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
             transition: all 0.2s;
+            cursor: pointer;
+            border: none;
         }
-        .cta-primary {
-            background: linear-gradient(135deg, #00c896, #00a0e9);
-            color: #fff;
+        .btn-primary {
+            background: var(--text-primary);
+            color: var(--bg);
         }
-        .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,200,150,0.3); }
-        .cta-secondary {
+        .btn-primary:hover { opacity: 0.85; transform: scale(1.02); }
+        .btn-ghost {
             background: transparent;
-            color: #00c896;
-            border: 1px solid rgba(0,200,150,0.3);
+            color: var(--text-primary);
+            border: 1px solid rgba(255,255,255,0.15);
         }
-        .cta-secondary:hover { border-color: #00c896; background: rgba(0,200,150,0.05); }
-        .install-box {
-            background: rgba(0,200,150,0.05);
-            border: 1px solid rgba(0,200,150,0.15);
-            border-radius: 8px;
-            padding: 1rem 2rem;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 1rem;
-            color: #00c896;
-            margin-bottom: 3rem;
+        .btn-ghost:hover { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.03); }
+        .install-cmd {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.85rem 1.5rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--jade);
             cursor: pointer;
             transition: all 0.2s;
         }
-        .install-box:hover { background: rgba(0,200,150,0.1); }
-        .trust-chain {
-            max-width: 600px;
-            text-align: left;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 12px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 3rem;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 0.85rem;
-            line-height: 1.8;
-            color: #8899aa;
+        .install-cmd:hover { border-color: rgba(16,185,129,0.3); background: var(--jade-dim); }
+        .install-cmd .prefix { color: var(--text-tertiary); }
+        .install-cmd .copy-hint {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: var(--text-tertiary);
+            padding: 0.15rem 0.5rem;
+            background: rgba(255,255,255,0.04);
+            border-radius: 4px;
         }
-        .trust-chain .root { color: #00c896; }
-        .trust-chain .sub { color: #00a0e9; }
-        .trust-chain .skill { color: #e0e0e0; }
-        .stats {
+
+        /* Sections */
+        section {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 8rem 2rem;
+        }
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--jade);
+            margin-bottom: 1rem;
+        }
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 4rem;
+        }
+
+        /* Verification layers */
+        .layers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .layer-card {
+            background: var(--bg);
+            padding: 2rem;
+            transition: background 0.3s;
+        }
+        .layer-card:hover { background: var(--bg-elevated); }
+        .layer-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--jade);
+            margin-bottom: 0.75rem;
+        }
+        .layer-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+        .layer-card p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Trust chain */
+        .trust-visual {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 2.2;
+            overflow-x: auto;
+        }
+        .trust-visual .root { color: var(--jade); font-weight: 600; }
+        .trust-visual .sub { color: #60a5fa; }
+        .trust-visual .dim { color: var(--text-tertiary); }
+
+        /* Comparison */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .compare-table th {
+            text-align: left;
+            padding: 1rem 1.25rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .compare-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        .compare-table tr td:last-child {
+            color: var(--jade);
+            font-weight: 500;
+        }
+        .compare-table tbody tr:hover td { background: var(--jade-dim); }
+
+        /* Framework logos */
+        .frameworks {
             display: flex;
             gap: 3rem;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
+            align-items: center;
             justify-content: center;
+            flex-wrap: wrap;
+            padding: 3rem 0;
+            opacity: 0.4;
         }
-        .stat { text-align: center; }
-        .stat-num { font-size: 2rem; font-weight: 700; color: #00c896; }
-        .stat-label { font-size: 0.85rem; color: #556677; }
-        footer {
+        .frameworks span {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+
+        /* CTA */
+        .cta-section {
             text-align: center;
-            padding: 2rem;
-            color: #334455;
-            font-size: 0.85rem;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 8rem 2rem;
+            position: relative;
         }
-        footer a { color: #00c896; text-decoration: none; }
-        @media (max-width: 600px) {
-            h1 { font-size: 2.2rem; }
-            .features { grid-template-columns: 1fr; }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--jade-glow) 0%, transparent 70%);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1120px;
+            margin: 0 auto;
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+        footer a { color: var(--text-secondary); text-decoration: none; }
+        footer a:hover { color: var(--text-primary); }
+        .footer-links { display: flex; gap: 2rem; }
+
+        /* Poem */
+        .poem {
+            font-size: 0.85rem;
+            color: var(--text-tertiary);
+            font-style: italic;
+            letter-spacing: 0.15em;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav { padding: 0 1rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links a:not(.nav-cta) { display: none; }
+            section { padding: 5rem 1.25rem; }
+            .layers-grid { grid-template-columns: 1fr; }
+            .trust-visual { padding: 1.5rem; font-size: 0.75rem; }
+            footer { flex-direction: column; gap: 1rem; text-align: center; }
         }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="jade-icon">💠</div>
-        <h1>JadeGate</h1>
-        <p class="subtitle">Deterministic Security for AI Agent Skills</p>
-        <p class="poem">春风不度玉门关</p>
 
-        <p class="tagline">
-            JadeGate 是 AI 智能体技能的确定性安全验证协议。<br>
-            不绑定任何框架 — JadeGate、Claude Code、Cursor、LangChain、任何 MCP 客户端都能用。<br>
-            5 层数学验证，零信任架构，贝叶斯路由，DAG 确定性执行。
-        </p>
+<nav>
+    <a href="/" class="nav-logo">
+        <span>💠</span> JadeGate
+    </a>
+    <div class="nav-links">
+        <a href="#security">Security</a>
+        <a href="#trust">Trust</a>
+        <a href="#compare">Compare</a>
+        <a href="https://github.com/JadeGate/jade-core" class="nav-cta">GitHub</a>
+    </div>
+</nav>
 
-        <div class="install-box" onclick="navigator.clipboard.writeText('pip install jadegate')">
-            $ pip install jadegate
+<div class="hero">
+    <div class="hero-badge">
+        <div class="dot"></div>
+        BSL 1.1 Licensed — Code-auditable, commercially protected
+    </div>
+    <h1>
+        Deterministic Security<br>
+        for <span class="jade-text">AI Agents</span>
+    </h1>
+    <p class="hero-sub">
+        The zero-trust verification protocol for AI agent skills.
+        5 mathematical security layers. Framework-agnostic.
+        No heuristics. No AI-based detection. Pure structural proof.
+    </p>
+    <div class="hero-actions">
+        <a href="https://github.com/JadeGate/jade-core" class="btn btn-primary">
+            Read the Docs →
+        </a>
+        <a href="#security" class="btn btn-ghost">How it works</a>
+    </div>
+    <div class="install-cmd" onclick="navigator.clipboard.writeText('pip install jadegate')">
+        <span class="prefix">$</span> pip install jadegate
+        <span class="copy-hint">click to copy</span>
+    </div>
+</div>
+
+<div class="frameworks">
+    <span>JadeGate</span>
+    <span>Claude Code</span>
+    <span>Cursor</span>
+    <span>LangChain</span>
+    <span>CrewAI</span>
+    <span>Any MCP Client</span>
+</div>
+
+<section id="security">
+    <div class="section-label">Security</div>
+    <h2 class="section-title">Five layers. Zero trust.</h2>
+    <p class="section-desc">
+        Every skill passes through 5 deterministic verification layers
+        before it earns the 💠. No exceptions.
+    </p>
+    <div class="layers-grid">
+        <div class="layer-card">
+            <div class="layer-num">01</div>
+            <h3>Structural Integrity</h3>
+            <p>JSON Schema validation. Malformed files rejected before any analysis begins.</p>
         </div>
-
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">🛡️</div>
-                <h3>5 层安全验证</h3>
-                <p>结构完整性、代码注入扫描、贝叶斯置信度、网络泄露分析、DAG 完整性证明</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🔑</div>
-                <h3>分层 CA 信任链</h3>
-                <p>根 CA 签发认证，企业可申请二级 CA。伪造不了签名，Fork 也没用</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">📊</div>
-                <h3>贝叶斯路由</h3>
-                <p>Thompson Sampling 驱动。用的人越多越精确，自动淘汰过时技能</p>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">🔌</div>
-                <h3>框架无关</h3>
-                <p>纯验证层，不绑定任何框架。MCP 兼容，两行代码接入</p>
-            </div>
+        <div class="layer-card">
+            <div class="layer-num">02</div>
+            <h3>Code Injection Scan</h3>
+            <p>Pattern-matches against 47 known injection vectors. eval(), exec(), __import__(), encoded payloads. One match → rejected.</p>
         </div>
-
-        <div class="trust-chain">
-            <span class="root">🔑 Root CA — JadeGate</span><br>
-            &nbsp;&nbsp;├── <span class="skill">💠 官方认证技能</span><br>
-            &nbsp;&nbsp;├── <span class="sub">🏢 企业二级 CA (Anthropic, OpenAI...)</span><br>
-            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── ✅ 可在自己范围内认证<br>
-            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── ❌ 无法伪造根签名<br>
-            &nbsp;&nbsp;└── <span class="root">🚫 随时可吊销任何二级 CA</span>
+        <div class="layer-card">
+            <div class="layer-num">03</div>
+            <h3>Bayesian Confidence</h3>
+            <p>Multi-signal Bayesian inference produces a confidence score. ≥0.95 → 💠 Verified. &lt;0.70 → ❌ Rejected.</p>
         </div>
-
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-num">5</div>
-                <div class="stat-label">安全验证层</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">61</div>
-                <div class="stat-label">原子操作</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">47</div>
-                <div class="stat-label">注入检测规则</div>
-            </div>
-            <div class="stat">
-                <div class="stat-num">0</div>
-                <div class="stat-label">信任假设</div>
-            </div>
+        <div class="layer-card">
+            <div class="layer-num">04</div>
+            <h3>Network Leak Analysis</h3>
+            <p>Whitelisted domains and protocols only. Any outbound connection to an unlisted endpoint → flagged.</p>
         </div>
-
-        <div class="cta-group">
-            <a href="https://github.com/JadeGate/jade-core" class="cta cta-primary">GitHub</a>
-            <a href="https://pypi.org/project/jadegate/" class="cta cta-secondary">PyPI</a>
-            <a href="https://crates.io/crates/jadegate" class="cta cta-secondary">crates.io</a>
+        <div class="layer-card">
+            <div class="layer-num">05</div>
+            <h3>DAG Integrity</h3>
+            <p>Execution flows verified as Directed Acyclic Graphs. Cycle detection, reachability proof, termination guarantee.</p>
+        </div>
+        <div class="layer-card">
+            <div class="layer-num">✦</div>
+            <h3>Cryptographic Signing</h3>
+            <p>Owner root key signs verified skills. Sub-CA certificates for enterprises. Full chain-of-trust verification.</p>
         </div>
     </div>
+</section>
 
-    <footer>
-        <p>💠 JadeGate — Pass the Gate. Trust the Jade.</p>
-        <p>License: <a href="https://github.com/JadeGate/jade-core/blob/main/LICENSE">BSL 1.1</a> | © 2026 JadeGate Project</p>
-    </footer>
+<section id="trust">
+    <div class="section-label">Trust Model</div>
+    <h2 class="section-title">Hierarchical CA Architecture</h2>
+    <p class="section-desc">
+        The same trust model that secures the internet.
+        Root authority issues certificates. Enterprises get scoped Sub-CAs.
+        Anyone can verify. Only the root can certify.
+    </p>
+    <div class="trust-visual">
+        <span class="root">🔑 Root CA — JadeGate</span><br>
+        <span class="dim">│</span><br>
+        <span class="dim">├──</span> <span class="root">💠 Direct certification</span> <span class="dim">— official skills, verified by root key</span><br>
+        <span class="dim">│</span><br>
+        <span class="dim">├──</span> <span class="sub">🏢 Sub-CA: Anthropic</span> <span class="dim">— scope: claude.* — expires: 365d</span><br>
+        <span class="dim">│   ├──</span> ✅ Can certify skills within scope<br>
+        <span class="dim">│   └──</span> ❌ Cannot forge root signatures<br>
+        <span class="dim">│</span><br>
+        <span class="dim">├──</span> <span class="sub">🏢 Sub-CA: OpenAI</span> <span class="dim">— scope: gpt.* — expires: 365d</span><br>
+        <span class="dim">│</span><br>
+        <span class="dim">└──</span> <span class="root">🚫 Revocation</span> <span class="dim">— any Sub-CA can be revoked instantly</span>
+    </div>
+</section>
+
+<section id="compare">
+    <div class="section-label">Comparison</div>
+    <h2 class="section-title">Why JadeGate</h2>
+    <p class="section-desc">
+        Structural verification vs. random search.
+        Deterministic execution vs. prompt mutation.
+    </p>
+    <div style="overflow-x: auto;">
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th>Dimension</th>
+                    <th>Traditional Skills</th>
+                    <th>Evolution Platforms</th>
+                    <th>JadeGate</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Format</td>
+                    <td>Python / YAML / Markdown</td>
+                    <td>Proprietary black-box</td>
+                    <td>Pure JSON — non-Turing-complete</td>
+                </tr>
+                <tr>
+                    <td>Safety</td>
+                    <td>Manual review</td>
+                    <td>Trust the platform</td>
+                    <td>5-layer mathematical proof</td>
+                </tr>
+                <tr>
+                    <td>Evolution</td>
+                    <td>Manual updates</td>
+                    <td>LLM mutation (expensive)</td>
+                    <td>DAG routing + Bayesian weights</td>
+                </tr>
+                <tr>
+                    <td>Execution</td>
+                    <td>Arbitrary code</td>
+                    <td>Cloud-dependent</td>
+                    <td>Deterministic DAG — zero hallucination</td>
+                </tr>
+                <tr>
+                    <td>Privacy</td>
+                    <td>Varies</td>
+                    <td>Data sent to servers</td>
+                    <td>Zero-trust. Local-first. No telemetry.</td>
+                </tr>
+                <tr>
+                    <td>Cost</td>
+                    <td>Token-heavy reasoning</td>
+                    <td>GPU-intensive mutation</td>
+                    <td>Zero-token execution</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<div class="cta-section">
+    <p class="poem" style="margin-bottom: 2rem;">春风不度玉门关</p>
+    <h2 class="section-title" style="margin-bottom: 1rem;">Pass the Gate. Trust the Jade.</h2>
+    <p class="section-desc" style="margin: 0 auto 3rem; text-align: center;">
+        Start verifying your AI agent skills today.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="https://github.com/JadeGate/jade-core" class="btn btn-primary">Get Started →</a>
+        <a href="https://pypi.org/project/jadegate/" class="btn btn-ghost">PyPI Package</a>
+    </div>
+</div>
+
+<footer>
+    <div>© 2026 JadeGate Project. BSL 1.1 Licensed.</div>
+    <div class="footer-links">
+        <a href="https://github.com/JadeGate">GitHub</a>
+        <a href="https://pypi.org/project/jadegate/">PyPI</a>
+        <a href="https://crates.io/crates/jadegate">crates.io</a>
+    </div>
+</footer>
+
 </body>
 </html>
