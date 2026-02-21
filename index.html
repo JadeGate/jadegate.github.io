@@ -541,25 +541,25 @@
 
 <section id="security">
     <div class="section-label">Security</div>
-    <h2 class="section-title">Five layers. Zero trust.</h2>
+    <h2 class="section-title" data-i18n="secTitle">Five layers. Zero trust.</h2>
     <p class="section-desc">
         Every skill passes through 5 deterministic verification layers
-        before it earns the 💠. No exceptions.
+        before it receives the 💠 seal. No exceptions.
     </p>
     <div class="layers-grid">
         <div class="layer-card">
             <div class="layer-num">01</div>
-            <h3>Structural Integrity</h3>
+            <h3 data-i18n="layer1">Structural Integrity</h3>
             <p>JSON Schema validation. Malformed files rejected before any analysis begins.</p>
         </div>
         <div class="layer-card">
             <div class="layer-num">02</div>
-            <h3>Code Injection Scan</h3>
+            <h3 data-i18n="layer2">Code Injection Scan</h3>
             <p>Pattern-matches against 47 known injection vectors. eval(), exec(), __import__(), encoded payloads. One match → rejected.</p>
         </div>
         <div class="layer-card">
             <div class="layer-num">03</div>
-            <h3>Bayesian Confidence</h3>
+            <h3 data-i18n="layer3">Bayesian Confidence</h3>
             <p>Multi-signal Bayesian inference produces a confidence score. ≥0.95 → 💠 Verified. &lt;0.70 → ❌ Rejected.</p>
         </div>
         <div class="layer-card">
@@ -569,7 +569,7 @@
         </div>
         <div class="layer-card">
             <div class="layer-num">05</div>
-            <h3>DAG Integrity</h3>
+            <h3 data-i18n="layer5">DAG Integrity</h3>
             <p>Execution flows verified as Directed Acyclic Graphs. Cycle detection, reachability proof, termination guarantee.</p>
         </div>
         <div class="layer-card">
@@ -869,5 +869,68 @@ document.querySelectorAll('[data-count]').forEach(el => {
 });
 </script>
 
+
+<script>
+// Simple i18n toggle
+const translations = {
+    zh: {
+        heroTitle: "AI 技能的确定性安全协议",
+        heroDesc: "零信任。五层数学验证。框架无关。让每一个 AI 技能在执行前通过确定性安全审查。",
+        getStarted: "开始使用 →",
+        viewDocs: "查看文档",
+        secTitle: "五层验证，零信任",
+        secDesc: "每个技能都必须通过 5 层确定性验证才能获得 💠 认证。没有例外。",
+        layer1: "结构完整性",
+        layer1d: "JSON Schema 验证。格式错误的文件在分析前即被拒绝。",
+        layer2: "代码注入扫描",
+        layer2d: "47 种危险模式检测。eval()、shell 注入、子进程调用——全部拦截。",
+        layer3: "贝叶斯置信度",
+        layer3d: "概率风险评分。综合复杂度、历史信誉和异常模式计算置信度。",
+        layer4: "网络与数据泄露",
+        layer4d: "URL 白名单 + 敏感数据外泄检测。未授权的外部连接一律阻断。",
+        layer5: "DAG 完整性",
+        layer5d: "执行图必须无环、无孤立节点、依赖关系合法。",
+        ctaTitle: "Pass the Gate. Trust the Jade.",
+        ctaDesc: "现在开始验证你的 AI 技能。",
+        langBtn: "EN"
+    },
+    en: {
+        heroTitle: "Deterministic Security for AI Agents",
+        heroDesc: "The zero-trust security protocol for AI agent skills. 5-layer mathematical verification. Framework-agnostic.",
+        getStarted: "Get Started →",
+        viewDocs: "Documentation",
+        secTitle: "Five layers. Zero trust.",
+        secDesc: "Every skill passes through 5 deterministic verification layers before it receives the 💠 seal. No exceptions.",
+        layer1: "Structural Integrity",
+        layer1d: "JSON Schema validation. Malformed files rejected before any analysis begins.",
+        layer2: "Code Injection Scan",
+        layer2d: "47 dangerous patterns detected. eval(), shell injection, subprocess — all caught.",
+        layer3: "Bayesian Confidence",
+        layer3d: "Probabilistic risk scoring. Complexity, reputation, and anomaly patterns combined.",
+        layer4: "Network & Data Leak",
+        layer4d: "URL whitelist + sensitive data exfiltration detection. Unauthorized connections blocked.",
+        layer5: "DAG Integrity",
+        layer5d: "Execution graph must be acyclic, no orphan nodes, valid dependencies.",
+        ctaTitle: "Pass the Gate. Trust the Jade.",
+        ctaDesc: "Start verifying your AI agent skills today.",
+        langBtn: "中文"
+    }
+};
+
+let currentLang = 'en';
+
+function toggleLang() {
+    currentLang = currentLang === 'en' ? 'zh' : 'en';
+    const t = translations[currentLang];
+    
+    // Update elements by data-i18n attribute
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.textContent = t[key];
+    });
+    
+    document.getElementById('lang-btn').textContent = t.langBtn;
+}
+</script>
 </body>
 </html>
