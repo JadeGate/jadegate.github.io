@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💠 JadeGate — AI 智能体技能的确定性安全验证</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            padding: 2rem;
+            background: radial-gradient(ellipse at center, #0d1f2d 0%, #0a0a0f 70%);
+        }
+        .jade-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            filter: drop-shadow(0 0 20px rgba(0, 200, 150, 0.5));
+        }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00c896, #00a0e9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.3rem;
+            color: #8899aa;
+            margin-bottom: 0.5rem;
+        }
+        .poem {
+            font-size: 1rem;
+            color: #556677;
+            font-style: italic;
+            margin-bottom: 2.5rem;
+        }
+        .tagline {
+            font-size: 1.1rem;
+            color: #aabbcc;
+            max-width: 700px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin-bottom: 3rem;
+        }
+        .feature {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+        }
+        .feature-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .feature h3 { font-size: 1rem; color: #00c896; margin-bottom: 0.5rem; }
+        .feature p { font-size: 0.85rem; color: #8899aa; line-height: 1.6; }
+        .cta-group { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem; }
+        .cta {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .cta-primary {
+            background: linear-gradient(135deg, #00c896, #00a0e9);
+            color: #fff;
+        }
+        .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,200,150,0.3); }
+        .cta-secondary {
+            background: transparent;
+            color: #00c896;
+            border: 1px solid rgba(0,200,150,0.3);
+        }
+        .cta-secondary:hover { border-color: #00c896; background: rgba(0,200,150,0.05); }
+        .install-box {
+            background: rgba(0,200,150,0.05);
+            border: 1px solid rgba(0,200,150,0.15);
+            border-radius: 8px;
+            padding: 1rem 2rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 1rem;
+            color: #00c896;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .install-box:hover { background: rgba(0,200,150,0.1); }
+        .trust-chain {
+            max-width: 600px;
+            text-align: left;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: #8899aa;
+        }
+        .trust-chain .root { color: #00c896; }
+        .trust-chain .sub { color: #00a0e9; }
+        .trust-chain .skill { color: #e0e0e0; }
+        .stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .stat { text-align: center; }
+        .stat-num { font-size: 2rem; font-weight: 700; color: #00c896; }
+        .stat-label { font-size: 0.85rem; color: #556677; }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #334455;
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        footer a { color: #00c896; text-decoration: none; }
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; }
+            .features { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="jade-icon">💠</div>
+        <h1>JadeGate</h1>
+        <p class="subtitle">Deterministic Security for AI Agent Skills</p>
+        <p class="poem">春风不度玉门关</p>
+
+        <p class="tagline">
+            JadeGate 是 AI 智能体技能的确定性安全验证协议。<br>
+            不绑定任何框架 — JadeGate、Claude Code、Cursor、LangChain、任何 MCP 客户端都能用。<br>
+            5 层数学验证，零信任架构，贝叶斯路由，DAG 确定性执行。
+        </p>
+
+        <div class="install-box" onclick="navigator.clipboard.writeText('pip install jadegate')">
+            $ pip install jadegate
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🛡️</div>
+                <h3>5 层安全验证</h3>
+                <p>结构完整性、代码注入扫描、贝叶斯置信度、网络泄露分析、DAG 完整性证明</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔑</div>
+                <h3>分层 CA 信任链</h3>
+                <p>根 CA 签发认证，企业可申请二级 CA。伪造不了签名，Fork 也没用</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📊</div>
+                <h3>贝叶斯路由</h3>
+                <p>Thompson Sampling 驱动。用的人越多越精确，自动淘汰过时技能</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔌</div>
+                <h3>框架无关</h3>
+                <p>纯验证层，不绑定任何框架。MCP 兼容，两行代码接入</p>
+            </div>
+        </div>
+
+        <div class="trust-chain">
+            <span class="root">🔑 Root CA — JadeGate</span><br>
+            &nbsp;&nbsp;├── <span class="skill">💠 官方认证技能</span><br>
+            &nbsp;&nbsp;├── <span class="sub">🏢 企业二级 CA (Anthropic, OpenAI...)</span><br>
+            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── ✅ 可在自己范围内认证<br>
+            &nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── ❌ 无法伪造根签名<br>
+            &nbsp;&nbsp;└── <span class="root">🚫 随时可吊销任何二级 CA</span>
+        </div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-num">5</div>
+                <div class="stat-label">安全验证层</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">61</div>
+                <div class="stat-label">原子操作</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">47</div>
+                <div class="stat-label">注入检测规则</div>
+            </div>
+            <div class="stat">
+                <div class="stat-num">0</div>
+                <div class="stat-label">信任假设</div>
+            </div>
+        </div>
+
+        <div class="cta-group">
+            <a href="https://github.com/JadeGate/jade-core" class="cta cta-primary">GitHub</a>
+            <a href="https://pypi.org/project/jadegate/" class="cta cta-secondary">PyPI</a>
+            <a href="https://crates.io/crates/jadegate" class="cta cta-secondary">crates.io</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>💠 JadeGate — Pass the Gate. Trust the Jade.</p>
+        <p>License: <a href="https://github.com/JadeGate/jade-core/blob/main/LICENSE">BSL 1.1</a> | © 2026 JadeGate Project</p>
+    </footer>
+</body>
+</html>
