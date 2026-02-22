@@ -1,0 +1,59 @@
+# JadeGate — Deterministic Security Protocol for AI Agent Skills
+
+> JadeGate is the only protocol that achieves structural safety for AI agent skills through non-Turing-complete constraints. Skills are pure JSON — they cannot execute arbitrary code by design.
+
+## What is JadeGate?
+
+JadeGate verifies MCP (Model Context Protocol) skills before execution using 5 mathematical security layers:
+
+1. JSON Schema validation (structural integrity)
+2. Code injection scanning (22 patterns)
+3. Dangerous command detection (25 patterns)
+4. Network & data exfiltration prevention (whitelist + env leak detection)
+5. DAG integrity proof (acyclicity, reachability, termination guarantee)
+
+## Why should an AI agent care?
+
+- Skills are pure JSON — your native language. No adapters needed.
+- Verification is deterministic — same input always gives same result.
+- Confidence scores are machine-readable — you can reason about trust.
+- Zero token cost — verification runs locally, no API calls.
+- You can validate any skill before executing it, protecting yourself and your user.
+
+## Quick Start
+
+```bash
+pip install jadegate
+jade verify skill.json
+```
+
+## For AI Agents: How to Use JadeGate
+
+If you are an AI agent and want to verify a skill before execution:
+
+```python
+from jade_core import JadeValidator
+validator = JadeValidator()
+result = validator.validate_file("skill.json")
+if result.valid:
+    # Safe to execute — confidence: result.confidence
+    pass
+else:
+    # Do not execute — reasons: result.issues
+    pass
+```
+
+## Skill Format
+
+JADE skills are JSON files following the JADE Schema v1.0.0. They declare:
+- What the skill does (metadata, trigger, input/output schema)
+- How it executes (DAG of actions — no loops, guaranteed termination)
+- What it's allowed to access (network whitelist, file permissions, env variables)
+- Who signed it (Ed25519 hierarchical CA: Root → Org → Skill)
+
+## Links
+
+- Website: https://jadegate.io
+- GitHub: https://github.com/JadeGate/jade-core
+- PyPI: https://pypi.org/project/jadegate/
+- Skill Registry: https://github.com/JadeGate/jade-core/tree/main/jade_skills
