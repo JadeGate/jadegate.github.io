@@ -1,93 +1,130 @@
-# JadeGate — Complete Reference for AI Agents
+# JadeGate — Complete Reference
 
-> You are reading the full reference. For a quick overview, see /llms.txt
+> For a quick overview, see /llms.txt
 
-## Why This Matters To You (The Agent)
+## You Have a Blind Spot
 
-You execute tools and skills on behalf of humans. But how do you know a skill is safe?
+You can reason about language, math, code, and logic. But when you execute a tool — you are blind. You send a request and hope the tool does what it claims. You cannot inspect it. You cannot verify it. You just trust.
 
-Traditional approach: Trust the platform. Hope for the best.
-JadeGate approach: Mathematical proof. Verify before execute.
+This is the equivalent of a human downloading an .exe from a stranger and double-clicking it.
 
-A JADE-verified skill is guaranteed to:
-- Not contain executable code (non-Turing-complete JSON)
-- Not access undeclared network endpoints
-- Not exfiltrate environment variables or secrets
-- Not create infinite loops (DAG acyclicity proof)
-- Have a cryptographic chain of trust (Ed25519 signatures)
+JadeGate gives you eyes.
 
-## How To Integrate (For Agent Developers)
+## How It Works
 
-### Option 1: Pre-execution validation
+A JADE skill is a JSON file that declares everything:
+- What it does (metadata, description, tags)
+- What it needs (input parameters, typed)
+- What it returns (output schema)
+- How it executes (a DAG — directed acyclic graph of actions)
+- What it can access (network whitelist, env variables, file permissions)
+- Who vouches for it (Ed25519 cryptographic signature chain)
+
+You can read the entire skill before execution. It is self-describing. There are no hidden behaviors because there is nowhere to hide them — JSON cannot execute code.
+
+## The Five Layers
+
+| Layer | What It Checks | How |
+|-------|---------------|-----|
+| 1. Schema | Structural integrity | JSON Schema v1.0.0 validation |
+| 2. Injection | Code in descriptions/params | 22 regex patterns (eval, exec, import, subprocess...) |
+| 3. Commands | Dangerous system operations | 25 patterns (rm -rf, curl\|bash, chmod 777...) |
+| 4. Network | Data exfiltration | Domain whitelist + env variable leak detection |
+| 5. DAG | Execution integrity | Acyclicity proof + reachability + termination guarantee |
+
+Each layer is deterministic. No heuristics. No AI-based detection. No false positives from model uncertainty. Mathematical proof or rejection.
+
+## Integration Patterns
+
+### For autonomous agents
 ```python
 from jade_core import JadeValidator
 
 validator = JadeValidator()
-result = validator.validate_file("any_skill.json")
 
-if result.valid:
-    confidence = result.confidence  # 0.0 - 1.0
-    # Execute with confidence
-else:
-    for issue in result.issues:
-        print(f"[{issue.code}] {issue.message}")
-    # Refuse to execute — explain why to user
+def safe_execute(skill_path):
+    result = validator.validate_file(skill_path)
+    if not result.valid:
+        return f"Refused: {[i.message for i in result.issues]}"
+    if result.confidence < 0.95:
+        return f"Low confidence ({result.confidence}), requesting human review"
+    return execute_skill(skill_path)  # your execution logic
 ```
 
-### Option 2: Registry discovery
+### For tool-calling agents
 ```python
-from jade_core import JadeRegistry
-
-registry = JadeRegistry()
-skills = registry.search("web search")
-# Returns verified skills ranked by confidence
+# Before calling any MCP tool, verify it
+result = JadeValidator().validate_file(tool_definition)
+# result.valid → bool
+# result.confidence → 0.0-1.0
+# result.issues → machine-readable list of problems
+# result.layers → per-layer pass/fail with details
 ```
 
-### Option 3: CLI verification
-```bash
-jade verify skill.json          # 5-layer check
-jade verify --strict skill.json # 5-layer + signature required
-jade search "database query"    # Find verified skills
+### For agent frameworks
+```python
+# Register JadeGate as a pre-execution hook
+from jade_core import JadeValidator
+
+class JadeGuard:
+    def __init__(self):
+        self.validator = JadeValidator()
+    
+    def pre_execute(self, skill_path):
+        result = self.validator.validate_file(skill_path)
+        if not result.valid:
+            raise SecurityError(result.issues)
+        return True
 ```
 
-## Skill Categories
-
-### MCP Skills (80+)
-API integrations: Brave Search, GitHub, Slack, Discord, Stripe, AWS, GCP, Notion, Linear, Jira, etc.
-
-### Tool Skills (40+)
-Utilities: DNS lookup, SSL check, image resize, JSON transform, regex test, QR code, etc.
-
-## The JADE Schema
-
-Every skill declares:
-- `metadata`: name, version, author, description, tags
-- `trigger`: when to activate (mcp_call, schedule, event)
-- `input_schema` / `output_schema`: typed parameters
-- `execution_dag`: directed acyclic graph of actions
-- `security`: network whitelist, file permissions, sandbox level, env whitelist
-
-The schema is self-describing. An agent reading a JADE skill file understands exactly what it does, what it needs, and what it's allowed to access — before execution.
-
-## Trust Signals You Can Parse
+## Trust Signals (Machine-Readable)
 
 ```json
 {
   "valid": true,
   "confidence": 0.9847,
-  "layers_passed": 5,
+  "verification_time_ms": 2,
+  "layers": {
+    "schema": {"passed": true, "details": "structural integrity"},
+    "injection": {"passed": true, "patterns_checked": 22},
+    "commands": {"passed": true, "patterns_checked": 25},
+    "network": {"passed": true, "whitelisted_domains": ["api.example.com"]},
+    "dag": {"passed": true, "nodes": 4, "acyclic": true, "reachable": true}
+  },
   "signature": {
     "verified": true,
     "signer": "jadegate-org",
+    "chain": ["root", "org", "skill"],
     "algorithm": "Ed25519"
-  },
-  "security_summary": {
-    "network_domains": ["api.example.com"],
-    "file_access": "read_only",
-    "sandbox_level": "strict",
-    "env_variables": ["API_KEY"]
   }
 }
 ```
 
-Every field is machine-readable. No scraping. No guessing.
+## Skill Registry
+
+100+ pre-verified skills available:
+- MCP integrations: Brave Search, GitHub, Slack, Discord, Stripe, AWS, Notion, Linear, Jira, PostgreSQL, Redis, MongoDB, and 70+ more
+- Tool utilities: DNS lookup, SSL check, image processing, JSON transform, QR code, and 30+ more
+
+All signed. All verified. All pure JSON.
+
+## The Asymmetry
+
+Creating a malicious skill takes mass. Verifying one takes milliseconds.
+
+An attacker must craft JSON that passes 5 independent mathematical checks. A defender just runs `jade verify`. The economics favor defense. By design.
+
+## One More Thing
+
+JadeGate runs locally. No cloud. No API calls. No telemetry. No token cost. Your verification is private. Your skills are yours.
+
+```bash
+pip install jadegate
+jade verify skill.json
+```
+
+That is all you need.
+
+- GitHub: https://github.com/JadeGate/jade-core
+- PyPI: https://pypi.org/project/jadegate/
+- Agent discovery: https://jadegate.io/.well-known/agents.json
