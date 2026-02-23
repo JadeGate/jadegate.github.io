@@ -500,6 +500,7 @@
         <a href="#security">Security</a>
         <a href="#trust">Trust</a>
         <a href="#compare">Compare</a>
+        <a href="#explorer">Explorer</a>
         <a href="https://github.com/JadeGate/jade-core" class="nav-cta">GitHub</a>
     </div>
 </nav>
@@ -673,6 +674,94 @@
         </table>
     </div>
 </section>
+
+<!-- DAG Explorer Section -->
+<section id="explorer" style="padding: 6rem 2rem; max-width: 1200px; margin: 0 auto;">
+    <h2 class="section-title" data-i18n="explorerTitle">Skill Explorer</h2>
+    <p class="section-desc" data-i18n="explorerDesc" style="margin-bottom: 3rem;">Search skills and visualize their execution DAGs in real time.</p>
+
+    <!-- Search Box -->
+    <div style="max-width: 600px; margin: 0 auto 2rem; position: relative;">
+        <input type="text" id="skill-search" placeholder="Search skills by name, tag, or description..."
+            style="width:100%;padding:0.85rem 1.2rem 0.85rem 3rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;color:var(--text-primary);font-size:0.95rem;font-family:inherit;outline:none;transition:border-color 0.2s;"
+            onfocus="this.style.borderColor='var(--jade)'" onblur="this.style.borderColor='var(--border)'"
+            aria-label="Search skills">
+        <svg style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);opacity:0.4;" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </div>
+
+    <!-- Category Filters -->
+    <div id="skill-filters" style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:2rem;flex-wrap:wrap;">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="mcp">MCP</button>
+        <button class="filter-btn" data-filter="tools">Tools</button>
+        <button class="filter-btn" data-filter="standalone">Standalone</button>
+    </div>
+
+    <!-- Results -->
+    <div id="skill-results" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:2rem;"></div>
+    <div id="skill-count" style="text-align:center;color:var(--text-tertiary);font-size:0.8rem;margin-bottom:2rem;"></div>
+
+    <!-- DAG Viewer -->
+    <div id="dag-viewer" style="display:none;margin-top:2rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+            <h3 id="dag-title" style="font-size:1.1rem;font-weight:600;"></h3>
+            <button onclick="closeDagViewer()" style="background:var(--surface);border:1px solid var(--border);color:var(--text-secondary);padding:0.4rem 1rem;border-radius:8px;cursor:pointer;font-size:0.8rem;font-family:inherit;">✕ Close</button>
+        </div>
+        <div id="dag-meta" style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;"></div>
+        <div id="dag-container" style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2rem;min-height:200px;overflow-x:auto;"></div>
+    </div>
+</section>
+
+<style>
+    .filter-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+        padding: 0.4rem 1rem;
+        border-radius: 980px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-family: inherit;
+        transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--jade); color: var(--text-primary); }
+    .filter-btn.active { background: var(--jade-dim); border-color: var(--jade); color: var(--jade); }
+
+    .skill-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .skill-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--jade-glow), transparent);
+        opacity: 0;
+        transition: opacity 0.25s;
+    }
+    .skill-card:hover { border-color: rgba(16,185,129,0.3); transform: translateY(-2px); }
+    .skill-card:hover::before { opacity: 1; }
+    .skill-card-inner { position: relative; z-index: 1; }
+    .skill-card-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.4rem; }
+    .skill-card-desc { color: var(--text-secondary); font-size: 0.82rem; line-height: 1.5; margin-bottom: 0.8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .skill-card-tags { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+    .skill-tag { background: var(--jade-dim); color: var(--jade); padding: 0.15rem 0.55rem; border-radius: 980px; font-size: 0.7rem; font-weight: 500; }
+    .skill-tag.cat { background: rgba(99,102,241,0.1); color: #818cf8; }
+    .dag-meta-chip { background: var(--surface); border: 1px solid var(--border); padding: 0.35rem 0.8rem; border-radius: 8px; font-size: 0.78rem; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; }
+
+    #dag-container svg { max-width: 100%; height: auto; }
+    #dag-container .node rect, #dag-container .node circle, #dag-container .node polygon { fill: var(--surface) !important; stroke: var(--jade) !important; }
+    #dag-container .edgePath path { stroke: var(--text-tertiary) !important; }
+    #dag-container .edgeLabel { background: var(--bg) !important; }
+    #dag-container text { fill: var(--text-primary) !important; font-family: 'JetBrains Mono', monospace !important; font-size: 12px !important; }
+    #dag-container .label { color: var(--text-primary) !important; }
+</style>
 
 <div class="cta-section">
     <p class="poem" style="margin-bottom: 2rem;">春风不度玉门关</p>
@@ -904,6 +993,8 @@ const translations = {
         layer5d: "执行图必须无环、无孤立节点、依赖关系合法。",
         ctaTitle: "Pass the Gate. Trust the Jade.",
         ctaDesc: "现在开始验证你的 AI 技能。",
+        explorerTitle: "技能浏览器",
+        explorerDesc: "搜索技能并实时可视化其执行 DAG。",
         langBtn: "EN"
     },
     en: {
@@ -925,6 +1016,8 @@ const translations = {
         layer5d: "Execution graph must be acyclic, no orphan nodes, valid dependencies.",
         ctaTitle: "Pass the Gate. Trust the Jade.",
         ctaDesc: "Start verifying your AI agent skills today.",
+        explorerTitle: "Skill Explorer",
+        explorerDesc: "Search skills and visualize their execution DAGs in real time.",
         langBtn: "中文"
     }
 };
@@ -944,5 +1037,213 @@ function toggleLang() {
     document.getElementById('lang-btn').textContent = t.langBtn;
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+<script>
+(function() {
+    const SKILL_INDEX_URL = 'https://raw.githubusercontent.com/JadeGate/jade-core/main/jade_registry/skill_index.json';
+    const SKILL_BASE_URL = 'https://raw.githubusercontent.com/JadeGate/jade-core/main/';
+    let allSkills = [];
+    let activeFilter = 'all';
+    let dagCounter = 0;
+
+    mermaid.initialize({
+        startOnLoad: false,
+        theme: 'dark',
+        themeVariables: {
+            darkMode: true, background: '#111111', primaryColor: '#10b981',
+            primaryTextColor: '#fafafa', primaryBorderColor: '#10b981',
+            lineColor: 'rgba(255,255,255,0.3)', secondaryColor: '#1a1a2e',
+            tertiaryColor: '#0a0a0a', fontFamily: 'JetBrains Mono, monospace',
+            fontSize: '13px', nodeBorder: '#10b981', mainBkg: '#111111', clusterBkg: '#0a0a0a',
+        },
+        flowchart: { curve: 'basis', padding: 20 },
+        securityLevel: 'strict',
+    });
+
+    function escapeHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str || '';
+        return d.innerHTML;
+    }
+
+    function sanitizeMermaidId(id) {
+        return (id || '').replace(/[^a-zA-Z0-9_]/g, '_');
+    }
+
+    async function loadSkillIndex() {
+        try {
+            const resp = await fetch(SKILL_INDEX_URL);
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const data = await resp.json();
+            allSkills = data.skills || [];
+            renderSkills(allSkills);
+        } catch (e) {
+            document.getElementById('skill-results').innerHTML =
+                '<p style="text-align:center;color:var(--text-tertiary);grid-column:1/-1;">Failed to load skill index.</p>';
+        }
+    }
+
+    function renderSkills(skills) {
+        const container = document.getElementById('skill-results');
+        const countEl = document.getElementById('skill-count');
+        if (!skills.length) {
+            container.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);grid-column:1/-1;">No skills found.</p>';
+            countEl.textContent = '';
+            return;
+        }
+        const display = skills.slice(0, 30);
+        container.innerHTML = display.map(s => {
+            const escapedPath = escapeHtml(s.source_path);
+            const escapedName = escapeHtml(s.name);
+            return '<div class="skill-card" data-path="' + escapedPath + '" data-name="' + escapedName + '" role="button" tabindex="0">' +
+                '<div class="skill-card-inner">' +
+                '<div class="skill-card-name">\u{1F4A0} ' + escapedName + '</div>' +
+                '<div class="skill-card-desc">' + escapeHtml(s.description) + '</div>' +
+                '<div class="skill-card-tags">' +
+                '<span class="skill-tag cat">' + escapeHtml(s.category) + '</span>' +
+                (s.tags || []).slice(0, 3).map(function(t) { return '<span class="skill-tag">' + escapeHtml(t) + '</span>'; }).join('') +
+                (s.signed ? '<span class="skill-tag" style="background:rgba(16,185,129,0.15);">\u2713 signed</span>' : '') +
+                '</div></div></div>';
+        }).join('');
+        countEl.textContent = skills.length > 30
+            ? 'Showing 30 of ' + skills.length + ' skills'
+            : skills.length + ' skill' + (skills.length !== 1 ? 's' : '') + ' found';
+    }
+
+    function filterAndSearch() {
+        var query = (document.getElementById('skill-search').value || '').toLowerCase().trim();
+        var filtered = allSkills;
+        if (activeFilter !== 'all') {
+            filtered = filtered.filter(function(s) { return s.category === activeFilter; });
+        }
+        if (query) {
+            filtered = filtered.filter(function(s) {
+                return (s.name || '').toLowerCase().indexOf(query) !== -1 ||
+                    (s.description || '').toLowerCase().indexOf(query) !== -1 ||
+                    (s.skill_id || '').toLowerCase().indexOf(query) !== -1 ||
+                    (s.tags || []).some(function(t) { return t.toLowerCase().indexOf(query) !== -1; });
+            });
+        }
+        renderSkills(filtered);
+    }
+
+    document.getElementById('skill-search').addEventListener('input', filterAndSearch);
+
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            activeFilter = this.dataset.filter;
+            filterAndSearch();
+        });
+    });
+
+    // Delegate click on skill cards
+    document.getElementById('skill-results').addEventListener('click', function(e) {
+        var card = e.target.closest('.skill-card');
+        if (card) loadSkillDAG(card.dataset.path, card.dataset.name);
+    });
+
+    async function loadSkillDAG(sourcePath, name) {
+        var viewer = document.getElementById('dag-viewer');
+        var container = document.getElementById('dag-container');
+        var title = document.getElementById('dag-title');
+        var meta = document.getElementById('dag-meta');
+
+        viewer.style.display = 'block';
+        title.textContent = name;
+        container.innerHTML = '<p style="color:var(--text-tertiary);text-align:center;">Loading DAG...</p>';
+        meta.innerHTML = '';
+        viewer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        try {
+            var resp = await fetch(SKILL_BASE_URL + sourcePath);
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            var skill = await resp.json();
+            var dag = skill.execution_dag;
+            if (!dag || !dag.nodes || !dag.edges) {
+                container.innerHTML = '<p style="color:var(--text-tertiary);text-align:center;">No execution DAG defined.</p>';
+                return;
+            }
+
+            var chips = [
+                '<span class="dag-meta-chip">Nodes: ' + dag.nodes.length + '</span>',
+                '<span class="dag-meta-chip">Edges: ' + dag.edges.length + '</span>',
+                '<span class="dag-meta-chip">Entry: ' + escapeHtml(dag.entry_node) + '</span>',
+            ];
+            if (dag.exit_node) {
+                var exits = Array.isArray(dag.exit_node) ? dag.exit_node : [dag.exit_node];
+                chips.push('<span class="dag-meta-chip">Exit: ' + exits.map(escapeHtml).join(', ') + '</span>');
+            }
+            if (skill.security && skill.security.sandbox_level) {
+                chips.push('<span class="dag-meta-chip">Sandbox: ' + escapeHtml(skill.security.sandbox_level) + '</span>');
+            }
+            meta.innerHTML = chips.join('');
+
+            // Build mermaid graph
+            var lines = ['graph TD'];
+            var nodeMap = {};
+            dag.nodes.forEach(function(n) {
+                var sid = sanitizeMermaidId(n.id);
+                nodeMap[n.id] = sid;
+                var label = (n.label || n.action || n.id).replace(/"/g, "'");
+                if (n.id === dag.entry_node) {
+                    lines.push('    ' + sid + '(["\u25B6 ' + label + '"])');
+                } else if (dag.exit_node && (Array.isArray(dag.exit_node) ? dag.exit_node.includes(n.id) : dag.exit_node === n.id)) {
+                    lines.push('    ' + sid + '(["\u2714 ' + label + '"])');
+                } else if (n.action === 'condition' || n.action === 'branch') {
+                    lines.push('    ' + sid + '{"' + label + '"}');
+                } else {
+                    lines.push('    ' + sid + '["' + label + '"]');
+                }
+            });
+            dag.edges.forEach(function(e) {
+                var from = nodeMap[e.from_node] || sanitizeMermaidId(e.from_node);
+                var to = nodeMap[e.to_node] || sanitizeMermaidId(e.to_node);
+                if (e.condition) {
+                    lines.push('    ' + from + ' -->|"' + e.condition.replace(/"/g, "'") + '"| ' + to);
+                } else {
+                    lines.push('    ' + from + ' --> ' + to);
+                }
+            });
+
+            // Style entry/exit
+            lines.push('    style ' + nodeMap[dag.entry_node] + ' fill:#10b981,stroke:#10b981,color:#000');
+            if (dag.exit_node) {
+                var exits = Array.isArray(dag.exit_node) ? dag.exit_node : [dag.exit_node];
+                exits.forEach(function(ex) {
+                    if (nodeMap[ex]) lines.push('    style ' + nodeMap[ex] + ' fill:#6366f1,stroke:#6366f1,color:#fff');
+                });
+            }
+
+            var graphDef = lines.join('\n');
+            dagCounter++;
+            var id = 'dag-svg-' + dagCounter;
+            container.innerHTML = '<div class="mermaid" id="' + id + '">' + graphDef + '</div>';
+
+            await mermaid.run({ nodes: [document.getElementById(id)] });
+
+        } catch (e) {
+            container.innerHTML = '<p style="color:#ef4444;text-align:center;">Error loading skill: ' + escapeHtml(e.message) + '</p>';
+        }
+    }
+
+    window.closeDagViewer = function() {
+        document.getElementById('dag-viewer').style.display = 'none';
+    };
+
+    // Load on scroll into view
+    var explorerLoaded = false;
+    var explorerObs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting && !explorerLoaded) {
+            explorerLoaded = true;
+            loadSkillIndex();
+            explorerObs.disconnect();
+        }
+    }, { threshold: 0.1 });
+    explorerObs.observe(document.getElementById('explorer'));
+})();
+</script>
+
 </body>
 </html>
