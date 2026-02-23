@@ -16,19 +16,35 @@
     "python_api": {
       "import": "from jade_core import JadeValidator",
       "usage": "JadeValidator().validate_file('skill.json')"
+    },
+    "mcp_server": {
+      "install": "npx @jadegate/mcp-server",
+      "capabilities": [
+        "verify",
+        "search",
+        "info",
+        "list",
+        "stats"
+      ]
     }
   },
   "skill_registry": {
     "url": "https://github.com/JadeGate/jade-core/tree/main/jade_skills",
     "format": "jade_schema_v1",
-    "count": 100,
-    "categories": ["mcp", "tools"]
+    "count": 151,
+    "categories": [
+      "mcp",
+      "tools"
+    ]
   },
   "trust_model": {
     "type": "deterministic",
     "layers": 5,
     "crypto": "Ed25519",
-    "confidence_range": [0.0, 1.0],
+    "confidence_range": [
+      0.0,
+      1.0
+    ],
     "non_turing_complete": true,
     "fail_mode": "closed"
   },
