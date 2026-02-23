@@ -511,13 +511,15 @@
         BSL 1.1 Licensed — Code-auditable, commercially protected
     </div>
     <h1>
-        Deterministic Security<br>
-        for <span class="jade-text">AI Agents</span>
+        Security Scanner<br>
+        for <span class="jade-text">MCP & AI Skills</span>
     </h1>
-    <p class="hero-sub">
-        The zero-trust verification protocol for AI agent skills.
-        5 mathematical security layers. Framework-agnostic.
-        No heuristics. No AI-based detection. Pure structural proof.
+    <p class="hero-sub" style="font-size:1.15rem;">
+        大模型的安检仪。验证每一个 MCP Server 和 AI Skill 的安全性。<br>
+        The security gate for AI agents — verify every MCP tool and skill before execution.
+    </p>
+    <p class="hero-sub" style="font-size:0.95rem; opacity:0.75; margin-top:-0.5rem;">
+        5-layer mathematical proof. Zero dependencies. 100% offline. No heuristics, no AI-based detection.
     </p>
     <div class="hero-actions">
         <a href="https://github.com/JadeGate/jade-core" class="btn btn-primary">
@@ -525,9 +527,15 @@
         </a>
         <a href="#security" class="btn btn-ghost">How it works</a>
     </div>
-    <div class="install-cmd" onclick="navigator.clipboard.writeText('pip install jadegate')">
-        <span class="prefix">$</span> pip install jadegate
-        <span class="copy-hint">click to copy</span>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <div class="install-cmd" onclick="navigator.clipboard.writeText('pip install jadegate')" style="flex:1; min-width:220px;">
+            <span class="prefix">$</span> pip install jadegate
+            <span class="copy-hint">click to copy</span>
+        </div>
+        <div class="install-cmd" onclick="navigator.clipboard.writeText('npx @jadegate/mcp-server')" style="flex:1; min-width:220px;">
+            <span class="prefix">$</span> npx @jadegate/mcp-server
+            <span class="copy-hint">click to copy</span>
+        </div>
     </div>
 </div>
 
