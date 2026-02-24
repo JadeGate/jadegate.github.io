@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>JadeGate Badge API</title></head>
+<body>
+<script>
+// Static badge redirect for GitHub Pages
+// URL format: /api/badge/?repo=ORG/REPO
+// Redirects to shields.io with JadeGate styling
+
+const params = new URLSearchParams(window.location.search);
+const repo = params.get('repo');
+
+if (repo) {
+    // Check registry for verification status
+    fetch('https://raw.githubusercontent.com/JadeGate/jade-core/main/jade_registry/community_verified.json')
+        .then(r => r.json())
+        .then(data => {
+            const entry = data[repo];
+            if (entry && entry.verified) {
+                const seal = entry.seal || '🔹';
+                const label = seal === '💠' ? 'Origin Verified' : seal === '🔷' ? 'Org Verified' : 'Community Verified';
+                const color = seal === '💠' ? '10b981' : seal === '🔷' ? '3b82f6' : '10b981';
+                window.location.href = `https://img.shields.io/badge/JadeGate-${encodeURIComponent(label)}-${color}?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTEyIDJMMyA3djEwbDkgNSA5LTVWN2wtOS01eiIvPjwvc3ZnPg==`;
+            } else {
+                window.location.href = `https://img.shields.io/badge/JadeGate-Not_Verified-gray?style=flat-square`;
+            }
+        })
+        .catch(() => {
+            window.location.href = `https://img.shields.io/badge/JadeGate-Unknown-gray?style=flat-square`;
+        });
+} else {
+    document.body.innerHTML = `
+        <h1>💠 JadeGate Badge API</h1>
+        <p>Usage: <code>/api/badge/?repo=ORG/REPO</code></p>
+        <p>Or use directly in your README:</p>
+        <pre>[![JadeGate Verified](https://jadegate.io/api/badge/?repo=YOUR_ORG/YOUR_REPO)](https://github.com/JadeGate/jade-core)</pre>
+        <h2>Static badges (no API needed)</h2>
+        <p>If you passed <code>jade verify</code>, you can use these directly:</p>
+        <pre>[![JadeGate 🔹 Verified](https://img.shields.io/badge/JadeGate-🔹_Community_Verified-10b981?style=flat-square)](https://github.com/JadeGate/jade-core)</pre>
+        <pre>[![JadeGate 💠 Verified](https://img.shields.io/badge/JadeGate-💠_Origin_Verified-10b981?style=flat-square)](https://github.com/JadeGate/jade-core)</pre>
+    `;
+}
+</script>
+</body>
+</html>

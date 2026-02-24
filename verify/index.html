@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JadeGate — Verify Status</title>
+    <style>
+        :root { --jade: #10b981; --bg: #000; --text: #fafafa; --dim: rgba(255,255,255,0.5); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 2rem; }
+        .container { max-width: 640px; margin: 4rem auto; }
+        h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .status { padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: #111; margin: 1rem 0; }
+        .seal { font-size: 2rem; margin-right: 0.5rem; }
+        .verified { color: var(--jade); font-weight: 600; }
+        .not-verified { color: #666; }
+        .meta { color: var(--dim); font-size: 0.875rem; margin-top: 0.5rem; }
+        a { color: var(--jade); text-decoration: none; }
+        code { background: #1a1a1a; padding: 0.2em 0.4em; border-radius: 4px; font-size: 0.875rem; }
+        .badge-section { margin-top: 2rem; padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: #111; }
+        pre { background: #0a0a0a; padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 0.5rem 0; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>💠 JadeGate Verification Status</h1>
+    <div id="status" class="status">Loading...</div>
+    <div id="badge-section" class="badge-section" style="display:none">
+        <h3>Add badge to your README</h3>
+        <pre id="badge-code"></pre>
+    </div>
+</div>
+<script>
+const path = window.location.pathname.replace('/verify/', '').replace(/\/$/, '');
+const repo = path || new URLSearchParams(window.location.search).get('repo');
+
+const el = document.getElementById('status');
+const badgeEl = document.getElementById('badge-section');
+const badgeCode = document.getElementById('badge-code');
+
+if (!repo) {
+    el.innerHTML = `
+        <p>Usage: <code>jadegate.io/verify/ORG/REPO</code></p>
+        <p class="meta">Check the verification status of any repository that uses JadeGate.</p>
+    `;
+} else {
+    fetch('https://raw.githubusercontent.com/JadeGate/jade-core/main/jade_registry/community_verified.json')
+        .then(r => r.json())
+        .then(data => {
+            const entry = data[repo];
+            if (entry && entry.verified) {
+                const sealMap = { '💠': 'Origin Verified', '🔷': 'Org Verified', '🔹': 'Community Verified' };
+                const label = sealMap[entry.seal] || 'Verified';
+                el.innerHTML = `
+                    <span class="seal">${entry.seal}</span>
+                    <span class="verified">${label}</span>
+                    <div class="meta">
+                        Repository: <a href="https://github.com/${repo}">${repo}</a><br>
+                        Skills verified: ${entry.passed}<br>
+                        Last verified: ${entry.last_verified}<br>
+                        Commit: <code>${entry.sha}</code>
+                    </div>
+                `;
+                badgeEl.style.display = 'block';
+                badgeCode.textContent = `[![JadeGate ${entry.seal} ${label}](https://img.shields.io/badge/JadeGate-${encodeURIComponent(entry.seal + ' ' + label)}-10b981?style=flat-square)](https://jadegate.io/verify/${repo})`;
+            } else {
+                el.innerHTML = `
+                    <span class="seal">⬜</span>
+                    <span class="not-verified">Not Verified</span>
+                    <div class="meta">
+                        Repository: <a href="https://github.com/${repo}">${repo}</a><br>
+                        This repository has not been verified by JadeGate yet.<br><br>
+                        <a href="https://github.com/JadeGate/verify-action">Add JadeGate verification →</a>
+                    </div>
+                `;
+            }
+        })
+        .catch(() => {
+            el.innerHTML = '<span class="not-verified">Failed to load verification data.</span>';
+        });
+}
+</script>
+</body>
+</html>
