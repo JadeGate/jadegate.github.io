@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JadeGate — Get Verified / 获取验证</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --jade: #10b981; --jade-dim: rgba(16,185,129,0.08); --bg: #000; --surface: #111; --border: rgba(255,255,255,0.06); --text: #fafafa; --dim: rgba(255,255,255,0.5); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+        .container { max-width: 720px; margin: 0 auto; padding: 3rem 1.5rem; }
+        h1 { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--dim); margin-bottom: 2.5rem; font-size: 0.95rem; }
+        .lang-toggle { display: flex; gap: 0.5rem; margin-bottom: 2rem; }
+        .lang-btn { padding: 0.4rem 1rem; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--dim); cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+        .lang-btn.active { background: var(--jade-dim); color: var(--jade); border-color: var(--jade); }
+
+        .step { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; position: relative; }
+        .step.active { border-color: var(--jade); }
+        .step.done { opacity: 0.6; }
+        .step-header { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+        .step-num { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.85rem; flex-shrink: 0; }
+        .step.active .step-num { background: var(--jade); color: #000; }
+        .step.done .step-num { background: var(--jade); color: #000; }
+        .step.done .step-num::after { content: '✓'; }
+        .step.done .step-num span { display: none; }
+        .step-title { font-weight: 600; font-size: 1rem; }
+        .step-body { margin-top: 1rem; display: none; }
+        .step.active .step-body { display: block; }
+        .step-desc { color: var(--dim); font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+
+        pre { background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; line-height: 1.5; position: relative; margin: 0.75rem 0; }
+        .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #222; border: 1px solid var(--border); border-radius: 6px; color: var(--dim); padding: 0.25rem 0.5rem; cursor: pointer; font-size: 0.75rem; transition: all 0.2s; }
+        .copy-btn:hover { color: var(--jade); border-color: var(--jade); }
+        .copy-btn.copied { color: var(--jade); }
+
+        input[type="text"] { width: 100%; padding: 0.6rem 0.8rem; background: #0a0a0a; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin: 0.5rem 0; }
+        input:focus { outline: none; border-color: var(--jade); }
+
+        .btn { display: inline-block; padding: 0.6rem 1.2rem; background: var(--jade); color: #000; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .btn:hover { opacity: 0.9; }
+        .btn-outline { background: transparent; border: 1px solid var(--jade); color: var(--jade); }
+
+        .result-box { background: #0a0a0a; border: 1px solid var(--jade); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+        .badge-preview { margin: 1rem 0; }
+        .badge-preview img { height: 20px; }
+
+        a { color: var(--jade); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .note { background: rgba(16,185,129,0.05); border-left: 3px solid var(--jade); padding: 0.75rem 1rem; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: var(--dim); margin: 0.75rem 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>💠 Get JadeGate Verified</h1>
+    <p class="subtitle">3 steps to verify your AI skills & MCP servers / 三步完成验证</p>
+
+    <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en')">English</button>
+        <button class="lang-btn" onclick="setLang('cn')">中文</button>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step active" id="step1">
+        <div class="step-header" onclick="goStep(1)">
+            <div class="step-num"><span>1</span></div>
+            <div class="step-title">
+                <span class="en">Enter your repository</span>
+                <span class="cn" style="display:none">输入你的仓库</span>
+            </div>
+        </div>
+        <div class="step-body">
+            <p class="step-desc">
+                <span class="en">Your GitHub repository that contains skill JSON files or MCP server configs.</span>
+                <span class="cn" style="display:none">包含技能 JSON 文件或 MCP 服务器配置的 GitHub 仓库。</span>
+            </p>
+            <input type="text" id="repo-input" placeholder="e.g. your-org/your-repo" oninput="updateAll()">
+            <input type="text" id="path-input" placeholder="Skill path, e.g. ./skills/ (default: .)" value=".">
+            <div style="margin-top:0.75rem">
+                <button class="btn" onclick="goStep(2)">
+                    <span class="en">Next →</span>
+                    <span class="cn" style="display:none">下一步 →</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step" id="step2">
+        <div class="step-header" onclick="goStep(2)">
+            <div class="step-num"><span>2</span></div>
+            <div class="step-title">
+                <span class="en">Add GitHub Action</span>
+                <span class="cn" style="display:none">添加 GitHub Action</span>
+            </div>
+        </div>
+        <div class="step-body">
+            <p class="step-desc">
+                <span class="en">Create this file in your repo: <code>.github/workflows/jadegate.yml</code></span>
+                <span class="cn" style="display:none">在你的仓库中创建文件：<code>.github/workflows/jadegate.yml</code></span>
+            </p>
+            <div style="position:relative">
+                <pre id="workflow-code"></pre>
+                <button class="copy-btn" onclick="copyCode('workflow-code', this)">Copy</button>
+            </div>
+            <div class="note">
+                <span class="en">💡 This runs on every push and PR. JadeGate checks all JSON files in the specified path through 5 security layers.</span>
+                <span class="cn" style="display:none">💡 每次 push 和 PR 都会自动运行。JadeGate 对指定路径下的所有 JSON 文件进行五层安全检查。</span>
+            </div>
+            <div style="margin-top:0.75rem">
+                <button class="btn" onclick="goStep(3)">
+                    <span class="en">Next →</span>
+                    <span class="cn" style="display:none">下一步 →</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step" id="step3">
+        <div class="step-header" onclick="goStep(3)">
+            <div class="step-num"><span>3</span></div>
+            <div class="step-title">
+                <span class="en">Add badge to README</span>
+                <span class="cn" style="display:none">在 README 中添加徽章</span>
+            </div>
+        </div>
+        <div class="step-body">
+            <p class="step-desc">
+                <span class="en">Once CI passes, add this badge to show your project is JadeGate verified:</span>
+                <span class="cn" style="display:none">CI 通过后，添加徽章展示你的项目已通过 JadeGate 验证：</span>
+            </p>
+            <div class="badge-preview">
+                <img src="https://img.shields.io/badge/JadeGate-🔹_Community_Verified-10b981?style=flat-square" alt="JadeGate Verified">
+            </div>
+            <div style="position:relative">
+                <pre id="badge-code"></pre>
+                <button class="copy-btn" onclick="copyCode('badge-code', this)">Copy</button>
+            </div>
+            <div class="note">
+                <span class="en">🔹 Community Verified = passed 5-layer check in CI. Request 💠 Origin seal by <a href="https://github.com/JadeGate/jade-core/issues/new?title=Request+Origin+Seal&labels=seal-request">opening an issue</a>.</span>
+                <span class="cn" style="display:none">🔹 社区验证 = CI 通过五层检查。申请 💠 官方印章请 <a href="https://github.com/JadeGate/jade-core/issues/new?title=Request+Origin+Seal&labels=seal-request">提交 Issue</a>。</span>
+            </div>
+
+            <div class="result-box">
+                <p style="font-weight:600;margin-bottom:0.5rem">
+                    <span class="en">✅ You're all set!</span>
+                    <span class="cn" style="display:none">✅ 全部完成！</span>
+                </p>
+                <p class="step-desc" style="margin:0">
+                    <span class="en">Push the workflow file, wait for CI to pass, then add the badge. Your skills are now verified on every commit.</span>
+                    <span class="cn" style="display:none">推送 workflow 文件，等 CI 通过，然后添加徽章。你的技能现在每次提交都会自动验证。</span>
+                </p>
+                <div style="margin-top:0.75rem">
+                    <a href="https://jadegate.io/verify/" class="btn btn-outline" id="check-link">
+                        <span class="en">Check verification status →</span>
+                        <span class="cn" style="display:none">查看验证状态 →</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let lang = 'en';
+
+function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.lang-btn')[l === 'en' ? 0 : 1].classList.add('active');
+    document.querySelectorAll('.en').forEach(e => e.style.display = l === 'en' ? '' : 'none');
+    document.querySelectorAll('.cn').forEach(e => e.style.display = l === 'cn' ? '' : 'none');
+}
+
+function goStep(n) {
+    document.querySelectorAll('.step').forEach((s, i) => {
+        s.classList.remove('active');
+        if (i < n - 1) s.classList.add('done');
+        else s.classList.remove('done');
+    });
+    document.getElementById('step' + n).classList.add('active');
+    updateAll();
+}
+
+function updateAll() {
+    const repo = document.getElementById('repo-input').value.trim() || 'YOUR_ORG/YOUR_REPO';
+    const path = document.getElementById('path-input').value.trim() || '.';
+
+    document.getElementById('workflow-code').textContent =
+`name: "💠 JadeGate Security Check"
+
+on: [push, pull_request]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify skills & MCP servers
+        uses: JadeGate/verify-action@v1
+        with:
+          path: ${path}`;
+
+    document.getElementById('badge-code').textContent =
+`[![JadeGate Verified](https://img.shields.io/badge/JadeGate-🔹_Community_Verified-10b981?style=flat-square)](https://jadegate.io/verify/${repo})`;
+
+    document.getElementById('check-link').href = `https://jadegate.io/verify/${repo}`;
+}
+
+function copyCode(id, btn) {
+    const text = document.getElementById(id).textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+}
+
+updateAll();
+</script>
+</body>
+</html>
