@@ -133,7 +133,7 @@
                 <span class="cn" style="display:none">CI 通过后，添加徽章展示你的项目已通过 JadeGate 验证：</span>
             </p>
             <div class="badge-preview">
-                <img src="https://img.shields.io/badge/JadeGate-🔹_Community_Verified-10b981?style=flat-square" alt="JadeGate Verified">
+                <img src="https://img.shields.io/endpoint?url=https://jadegate.io/api/badge/JadeGate/jade-core.json" alt="JadeGate Verified">
             </div>
             <div style="position:relative">
                 <pre id="badge-code"></pre>
@@ -206,7 +206,7 @@ jobs:
           path: ${path}`;
 
     document.getElementById('badge-code').textContent =
-`[![JadeGate Verified](https://img.shields.io/badge/JadeGate-🔹_Community_Verified-10b981?style=flat-square)](https://jadegate.io/verify/${repo})`;
+`[![JadeGate Verified](https://img.shields.io/endpoint?url=https://jadegate.io/api/badge/${repo}.json)](https://jadegate.io/verify/?repo=${repo})`;
 
     document.getElementById('check-link').href = `https://jadegate.io/verify/${repo}`;
 }
