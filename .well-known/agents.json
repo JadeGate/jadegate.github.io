@@ -1,52 +1,45 @@
 {
   "schema_version": "1.0",
   "name": "JadeGate",
-  "description": "Deterministic security verification protocol for AI agent skills. Validates MCP skills using 5 mathematical proof layers. Pure JSON, non-Turing-complete, zero token cost.",
+  "description": "Transparent security proxy for MCP servers. 6-layer protection stack: policy enforcement, runtime monitoring, transport proxy, trust verification, security scanning, auto-installation. Zero config — pip install jadegate.",
   "url": "https://jadegate.io",
   "capabilities": [
-    "skill_verification",
-    "security_validation",
-    "trust_scoring",
-    "signature_verification",
-    "dag_integrity_proof"
+    "mcp_proxy",
+    "policy_enforcement",
+    "runtime_monitoring",
+    "trust_verification",
+    "security_scanning",
+    "auto_installation"
   ],
   "integration": {
     "install": "pip install jadegate",
-    "verify_command": "jade verify <skill.json>",
-    "python_api": {
-      "import": "from jade_core import JadeValidator",
-      "usage": "JadeValidator().validate_file('skill.json')"
+    "commands": {
+      "status": "jadegate status",
+      "scan": "jadegate scan",
+      "install": "jadegate install",
+      "uninstall": "jadegate uninstall"
     },
-    "mcp_server": {
-      "install": "npx @jadegate/mcp-server",
-      "capabilities": [
-        "verify",
-        "search",
-        "info",
-        "list",
-        "stats"
-      ]
+    "python_sdk": {
+      "env_var": "JADEGATE=1",
+      "programmatic": "import jadegate; jadegate.activate()"
     }
   },
-  "skill_registry": {
-    "url": "https://github.com/JadeGate/jade-core/tree/main/jade_skills",
-    "format": "jade_schema_v1",
-    "count": 151,
-    "categories": [
-      "mcp",
-      "tools"
-    ]
-  },
-  "trust_model": {
+  "supported_clients": [
+    "Claude Desktop",
+    "Cursor",
+    "Windsurf",
+    "Cline",
+    "Continue",
+    "Zed"
+  ],
+  "security_model": {
     "type": "deterministic",
-    "layers": 5,
+    "layers": 6,
     "crypto": "Ed25519",
-    "confidence_range": [
-      0.0,
-      1.0
-    ],
-    "non_turing_complete": true,
-    "fail_mode": "closed"
+    "trust_model": "TOFU",
+    "offline": true,
+    "telemetry": false,
+    "fail_mode": "open"
   },
   "contact": {
     "github": "https://github.com/JadeGate",

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JadeGate — Deterministic Security for AI Agents</title>
-    <meta name="description" content="The zero-trust security protocol for AI agent skills. 5-layer mathematical verification. Framework-agnostic.">
+    <title>JadeGate — The TLS of AI Tool Calls</title>
+    <meta name="description" content="Transparent security proxy for MCP servers. 6-layer protection. pip install jadegate — zero config, fully offline.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -508,18 +508,18 @@
 <div class="hero">
     <div class="hero-badge">
         <div class="dot"></div>
-        BSL 1.1 Licensed — Code-auditable, commercially protected
+        MIT Licensed — Open source, free forever
     </div>
     <h1>
-        Security Scanner<br>
-        for <span class="jade-text">MCP & AI Skills</span>
+        The TLS of<br>
+        <span class="jade-text">AI Tool Calls</span>
     </h1>
     <p class="hero-sub" style="font-size:1.15rem;">
-        大模型的安检仪。验证每一个 MCP Server 和 AI Skill 的安全性。<br>
-        The security gate for AI agents — verify every MCP tool and skill before execution.
+        AI 工具调用的安全协议。透明代理，保护每一个 MCP Server。<br>
+        Transparent security proxy for MCP servers. One command. Zero config.
     </p>
     <p class="hero-sub" style="font-size:0.95rem; opacity:0.75; margin-top:-0.5rem;">
-        5-layer mathematical proof. Zero dependencies. 100% offline. No heuristics, no AI-based detection.
+        6-layer security stack. Fully offline. No telemetry. pip install and forget.
     </p>
     <div class="hero-actions">
         <a href="https://github.com/JadeGate/jade-core" class="btn btn-primary">
@@ -532,19 +532,20 @@
             <span class="prefix">$</span> pip install jadegate
             <span class="copy-hint">click to copy</span>
         </div>
-        <div class="install-cmd" onclick="navigator.clipboard.writeText('npx @jadegate/mcp-server')" style="flex:1; min-width:220px;">
-            <span class="prefix">$</span> npx @jadegate/mcp-server
+        <div class="install-cmd" onclick="navigator.clipboard.writeText('jadegate scan')" style="flex:1; min-width:220px;">
+            <span class="prefix">$</span> jadegate scan
             <span class="copy-hint">click to copy</span>
         </div>
     </div>
 </div>
 
 <div class="frameworks">
-    <span>JadeGate</span>
-    <span>Claude Code</span>
+    <span>Claude Desktop</span>
     <span>Cursor</span>
-    <span>LangChain</span>
-    <span>CrewAI</span>
+    <span>Windsurf</span>
+    <span>Cline</span>
+    <span>Continue</span>
+    <span>Zed</span>
     <span>Any MCP Client</span>
 </div>
 
@@ -553,71 +554,69 @@
     </div>
 <section id="security">
     <div class="section-label">Security</div>
-    <h2 class="section-title" data-i18n="secTitle">Five layers. Zero trust.</h2>
+    <h2 class="section-title" data-i18n="secTitle">Six layers. Zero trust.</h2>
     <p class="section-desc">
-        Every skill passes through 5 deterministic verification layers
-        before it receives the 💠 seal. No exceptions.
+        Every tool call passes through 6 security layers
+        before execution. No exceptions.
     </p>
     <div style="text-align:center; margin: 2.5rem auto 3rem; max-width: 900px;">
-        <img src="assets/pipeline_5layer.png" alt="JadeGate 5-Layer Validation Pipeline" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+        <img src="assets/pipeline_5layer.png" alt="JadeGate 6-Layer Security Pipeline" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
     </div>
     <div class="layers-grid">
         <div class="layer-card">
             <div class="layer-num">01</div>
-            <h3 data-i18n="layer1">Structural Integrity</h3>
-            <p>JSON Schema validation. Malformed files rejected before any analysis begins.</p>
+            <h3 data-i18n="layer1">Policy Enforcement</h3>
+            <p>Per-tool allow/deny/ask rules. Rate limiting. Argument validation. Your rules, deterministically enforced.</p>
         </div>
         <div class="layer-card">
             <div class="layer-num">02</div>
-            <h3 data-i18n="layer2">Code Injection Scan</h3>
-            <p>Pattern-matches against 47 known injection vectors. eval(), exec(), __import__(), encoded payloads. One match → rejected.</p>
+            <h3 data-i18n="layer2">Runtime Monitoring</h3>
+            <p>Dynamic call-chain tracking via DAG. Anomaly detection. Circuit breaker for fault isolation.</p>
         </div>
         <div class="layer-card">
             <div class="layer-num">03</div>
-            <h3 data-i18n="layer3">Bayesian Confidence</h3>
-            <p>Multi-signal Bayesian inference produces a confidence score. ≥0.95 → 💠 Verified. &lt;0.70 → ❌ Rejected.</p>
+            <h3 data-i18n="layer3">Transport Proxy</h3>
+            <p>Transparent MCP proxy — intercepts stdio/SSE without modifying the server. Zero server-side changes.</p>
         </div>
         <div class="layer-card">
             <div class="layer-num">04</div>
-            <h3>Network Leak Analysis</h3>
-            <p>Whitelisted domains and protocols only. Any outbound connection to an unlisted endpoint → flagged.</p>
+            <h3>Trust Verification</h3>
+            <p>TOFU (Trust On First Use) + Ed25519 certificates. Cryptographic server identity verification.</p>
         </div>
         <div class="layer-card">
             <div class="layer-num">05</div>
-            <h3 data-i18n="layer5">DAG Integrity</h3>
-            <p>Execution flows verified as Directed Acyclic Graphs. Cycle detection, reachability proof, termination guarantee.</p>
+            <h3 data-i18n="layer5">Security Scanner</h3>
+            <p>Static analysis of MCP server capabilities. Risk scoring. Dangerous pattern detection.</p>
         </div>
         <div class="layer-card">
-            <div class="layer-num">✦</div>
-            <h3>Cryptographic Signing</h3>
-            <p>Owner root key signs verified skills. Sub-CA certificates for enterprises. Full chain-of-trust verification.</p>
+            <div class="layer-num">06</div>
+            <h3>Auto Installer</h3>
+            <p>Auto-detects and injects into all MCP client configs. Claude, Cursor, Windsurf, Cline, Continue, Zed.</p>
         </div>
     </div>
 </section>
 
 <section id="trust">
     <div class="section-label">Trust Model</div>
-    <h2 class="section-title">Hierarchical CA Architecture</h2>
+    <h2 class="section-title">TOFU + Ed25519 Trust</h2>
     <p class="section-desc">
-        The same trust model that secures the internet.
-        Root authority issues certificates. Enterprises get scoped Sub-CAs.
-        Anyone can verify. Only the root can certify.
+        Trust On First Use — like SSH known_hosts.
+        First connection fingerprints the server. Subsequent connections verify identity.
+        Ed25519 certificates for cryptographic proof.
     </p>
     <div style="text-align:center; margin: 2.5rem auto 3rem; max-width: 800px;">
-        <img src="assets/trust_hierarchy.png" alt="JadeGate Trust Hierarchy" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+        <img src="assets/trust_hierarchy.png" alt="JadeGate Trust Model" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
     </div>
     <div class="trust-visual">
-        <span class="root">🔑 Root CA — JadeGate</span><br>
+        <span class="root">🔑 TOFU — Trust On First Use</span><br>
         <span class="dim">│</span><br>
-        <span class="dim">├──</span> <span class="root">💠 Direct certification</span> <span class="dim">— official skills, verified by root key</span><br>
+        <span class="dim">├──</span> <span class="root">💠 First connection</span> <span class="dim">— fingerprint stored in local trust store</span><br>
         <span class="dim">│</span><br>
-        <span class="dim">├──</span> <span class="sub">🏢 Sub-CA: Anthropic</span> <span class="dim">— scope: claude.* — expires: 365d</span><br>
-        <span class="dim">│   ├──</span> ✅ Can certify skills within scope<br>
-        <span class="dim">│   └──</span> ❌ Cannot forge root signatures<br>
+        <span class="dim">├──</span> <span class="sub">🔒 Subsequent calls</span> <span class="dim">— Ed25519 signature verified against stored fingerprint</span><br>
+        <span class="dim">│   ├──</span> ✅ Match → proceed<br>
+        <span class="dim">│   └──</span> ❌ Mismatch → circuit breaker triggered<br>
         <span class="dim">│</span><br>
-        <span class="dim">├──</span> <span class="sub">🏢 Sub-CA: OpenAI</span> <span class="dim">— scope: gpt.* — expires: 365d</span><br>
-        <span class="dim">│</span><br>
-        <span class="dim">└──</span> <span class="root">🚫 Revocation</span> <span class="dim">— any Sub-CA can be revoked instantly</span>
+        <span class="dim">└──</span> <span class="root">📋 jadegate scan</span> <span class="dim">— audit all servers, review trust decisions</span>
     </div>
 </section>
 
@@ -625,58 +624,55 @@
     <div class="section-label">Comparison</div>
     <h2 class="section-title">Why JadeGate</h2>
     <p class="section-desc">
-        Structural verification vs. random search.
-        Deterministic execution vs. prompt mutation.
+        MCP has no security layer. JadeGate adds one — transparently.
     </p>
     <div style="text-align:center; margin: 2.5rem auto 3rem; max-width: 900px;">
-        <img src="assets/mcp_vs_jadegate.png" alt="Agent Skill Ecosystem Comparison" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+        <img src="assets/mcp_vs_jadegate.png" alt="Raw MCP vs JadeGate Comparison" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
     </div>
     <div style="overflow-x: auto;">
         <table class="compare-table">
             <thead>
                 <tr>
                     <th>Dimension</th>
-                    <th>Traditional Skills</th>
-                    <th>Evolution Platforms</th>
+                    <th>Raw MCP</th>
                     <th>JadeGate</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>Format</td>
-                    <td>Python / YAML / Markdown</td>
-                    <td>Proprietary black-box</td>
-                    <td>Pure JSON — non-Turing-complete</td>
+                    <td>Tool call policy</td>
+                    <td>❌ None</td>
+                    <td>✅ Per-tool allow/deny/ask</td>
                 </tr>
                 <tr>
-                    <td>Safety</td>
-                    <td>Manual review</td>
-                    <td>Trust the platform</td>
-                    <td>5-layer mathematical proof</td>
+                    <td>Call chain tracking</td>
+                    <td>❌ None</td>
+                    <td>✅ Dynamic DAG</td>
                 </tr>
                 <tr>
-                    <td>Evolution</td>
-                    <td>Manual updates</td>
-                    <td>LLM mutation (expensive)</td>
-                    <td>DAG routing + Bayesian weights</td>
+                    <td>Anomaly detection</td>
+                    <td>❌ None</td>
+                    <td>✅ Circuit breaker + rate limit</td>
                 </tr>
                 <tr>
-                    <td>Execution</td>
-                    <td>Arbitrary code</td>
-                    <td>Cloud-dependent</td>
-                    <td>Deterministic DAG — zero hallucination</td>
+                    <td>Server identity</td>
+                    <td>❌ None</td>
+                    <td>✅ TOFU + Ed25519</td>
+                </tr>
+                <tr>
+                    <td>Security scan</td>
+                    <td>❌ None</td>
+                    <td>✅ Static analysis + risk score</td>
+                </tr>
+                <tr>
+                    <td>Setup effort</td>
+                    <td>N/A</td>
+                    <td>pip install jadegate</td>
                 </tr>
                 <tr>
                     <td>Privacy</td>
                     <td>Varies</td>
-                    <td>Data sent to servers</td>
-                    <td>Zero-trust. Local-first. No telemetry.</td>
-                </tr>
-                <tr>
-                    <td>Cost</td>
-                    <td>Token-heavy reasoning</td>
-                    <td>GPU-intensive mutation</td>
-                    <td>Zero-token execution</td>
+                    <td>100% offline. Zero telemetry.</td>
                 </tr>
             </tbody>
         </table>
