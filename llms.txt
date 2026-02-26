@@ -77,7 +77,7 @@ jadegate.activate()
 
 ## Links
 
-- GitHub: https://github.com/JadeGate/jade-core
+- GitHub: https://github.com/JadeGate/jadegate
 - PyPI: https://pypi.org/project/jadegate/
 - Website: https://jadegate.io
 - Full reference: https://jadegate.io/llms-full.txt

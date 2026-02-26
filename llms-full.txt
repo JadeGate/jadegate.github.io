@@ -191,7 +191,7 @@ pytest tests/ -v
 
 ## Links
 
-- GitHub: https://github.com/JadeGate/jade-core
+- GitHub: https://github.com/JadeGate/jadegate
 - PyPI: https://pypi.org/project/jadegate/
 - Website: https://jadegate.io
 - Quick reference: https://jadegate.io/llms.txt
