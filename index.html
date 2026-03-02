@@ -594,6 +594,13 @@
             <p>Auto-detects and injects into all MCP client configs. Claude, Cursor, Windsurf, Cline, Continue, Zed.</p>
         </div>
     </div>
+    <div style="text-align:center; margin: 3rem auto 0; max-width: 900px;">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary);">Security Audit Report</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+            Run <code style="background: rgba(255,255,255,0.05); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace;">jadegate scan --audit</code> to get a detailed CT-style security report for all your MCP servers.
+        </p>
+        <img src="assets/demo_scan_audit.gif" alt="JadeGate Security Audit Report" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
+    </div>
 </section>
 
 <section id="trust">
@@ -617,6 +624,13 @@
         <span class="dim">│   └──</span> ❌ Mismatch → circuit breaker triggered<br>
         <span class="dim">│</span><br>
         <span class="dim">└──</span> <span class="root">📋 jadegate scan</span> <span class="dim">— audit all servers, review trust decisions</span>
+    </div>
+    <div style="text-align:center; margin: 3rem auto 0; max-width: 900px;">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary);">Certificate Management</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+            Every tool gets a security certificate with risk profile, trust score, and cryptographic signature. View all with <code style="background: rgba(255,255,255,0.05); padding: 0.2rem 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace;">jadegate cert list</code>.
+        </p>
+        <img src="assets/demo_cert.gif" alt="JadeGate Certificate List" style="width:100%; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 32px rgba(0,0,0,0.4);">
     </div>
 </section>
 
